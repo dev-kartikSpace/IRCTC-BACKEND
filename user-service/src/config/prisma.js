@@ -1,13 +1,19 @@
 const { PrismaClient } = require('@prisma/client');
+const { PrismaPg } = require('@prisma/adapter-pg');
 const {config} = require('./');
+const connectionString = config.DATABASE_URL;
+
 const globalForPrisma = global;
 
-const prisma = 
-    globalForPrisma.prisma ??
-    new PrismaClient({});
+if (!globalForPrisma.prisma) {
+  const adapter = new PrismaPg({ connectionString });
 
-if(config.NODE_ENV !== 'production'){
-    globalForPrisma.prisma = prisma;
+  globalForPrisma.prisma = new PrismaClient({
+    adapter,
+    log: ['error', 'warn'],
+  });
 }
+
+const prisma = globalForPrisma.prisma;
 
 module.exports = prisma;
