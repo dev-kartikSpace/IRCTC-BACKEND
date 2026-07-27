@@ -8,7 +8,6 @@ class RedisClient {
 
      constructor(){
           // prevent direct instantiation
-
      }
 
      static getInstance(){
