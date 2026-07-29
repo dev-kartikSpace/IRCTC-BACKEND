@@ -3,6 +3,13 @@ const asyncHandler = require('../utils/asyncHandler');
 const {config} = require('../config');
 const authService = require('../services/auth.service');
 
+const cookieOptions = (maxAge) => ({
+     httpOnly: true,
+     secure: true,
+     sameSite: 'strict',
+     maxAge,
+});
+
 exports.sendOTP = asyncHandler(async(req, res) =>{
      const {firstName, lastName, email, password, confirmPassword} = req.body;
      if(!firstName || !lastName || !email || !password || !confirmPassword){
@@ -14,13 +21,8 @@ exports.sendOTP = asyncHandler(async(req, res) =>{
      }
 
      const {otpSessionId} = await authService.sendOTP(firstName, lastName, email, password);
-     res.cookie("otp_session", otpSessionId, {
-          http : true,
-          secure : true,
-          sameSite : "strict",
-          maxAge: config.OTP_TTL * 1000
-     }).status(200).json({
-        success : true,
-        message: "OTP sent Successfully"
+     res.cookie("otp_session", otpSessionId, cookieOptions(config.OTP_TTL * 1000)).status(200).json({
+          success: true,
+          message: "OTP sent successfully"
      })
 })

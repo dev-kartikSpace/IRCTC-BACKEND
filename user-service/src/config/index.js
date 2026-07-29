@@ -13,10 +13,11 @@ const config = {
   OTP_MAX_VERIFY_ATTEMPTS: process.env.OTP_MAX_VERIFY_ATTEMPTS || 5,
   OTP_HMAC_SECRET: process.env.OTP_HMAC_SECRET || "09dc0abbb2961391d822610b31b912e3231d4d2745c76b1ef4765af4c62f6079",
 
+
   MAIL_SEND: process.env.MAIL_SEND,
   SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
+}
 
-};
 
 if (!config.SENDGRID_API_KEY) {
   throw new Error('SENDGRID_API_KEY missing');
@@ -25,5 +26,4 @@ if (!config.SENDGRID_API_KEY) {
 if (!config.MAIL_SEND) {
   throw new Error('MAIL_SEND missing');
 }
-
 module.exports = { config };
