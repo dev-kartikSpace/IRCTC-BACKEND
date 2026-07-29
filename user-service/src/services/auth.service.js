@@ -1,6 +1,6 @@
 const {ConflictError} = require("../utils/error");
 const {generateAndStoreOtp} = require("../utils/otp");
-const {sendOtpEmail} = require("../utils");
+const {sendOtpEmail} = require("../utils/email");
 const bcrypt = require('bcrypt');
 const prisma = require("../config/prisma");
 

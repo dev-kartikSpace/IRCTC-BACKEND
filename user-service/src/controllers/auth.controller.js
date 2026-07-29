@@ -1,6 +1,6 @@
 const { BadRequestError, UnauthorizedError } = require("../utils/error");
 const asyncHandler = require('../utils/asyncHandler');
-const { config } = require('../config');
+const {config} = require('../config');
 const authService = require('../services/auth.service');
 
 exports.sendOTP = asyncHandler(async(req, res) =>{
