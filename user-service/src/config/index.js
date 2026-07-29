@@ -6,6 +6,10 @@ const config = {
   LOG_LEVEL: process.env.LOG_LEVEL || "info",
   REDIS_URL: process.env.REDIS_URL,
   ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS,
+
+  OTP_TTL: process.env.OTP_TTL || 300,
+  OTP_RATE_MAX_PER_HOUR: process.env.OTP_RATE_MAX_PER_HOUR || 5,
+  OTP_MAX_VERIFY_ATTEMPTS: process.env.OTP_MAX_VERIFY_ATTEMPTS || 5,
 };
 
 module.exports = { config };
