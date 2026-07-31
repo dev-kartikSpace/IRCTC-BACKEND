@@ -1,6 +1,6 @@
 const {ConflictError} = require("../utils/error");
 const {generateAndStoreOtp} = require("../utils/otp");
-const {sendOtpEmail} = require("../utils/email");
+const {sendOtpEmail, verifyOtpEmail} = require("../utils/email");
 const bcrypt = require('bcrypt');
 const prisma = require("../config/prisma");
 
@@ -20,4 +20,25 @@ const sendOTP = async(firstName, lastName, email, password) =>{
      return {otpSessionId}
 }
 
-module.exports = {sendOTP}
+const verifyOTP = async(otp, otpSessionId) =>{
+     const meta = await verifyOtp(otp, otpSessionId);
+     if(meta === null){
+          throw new BadRequestError("Invalid or expired OTP", "OTP_INVALID");
+     }
+     const user = await prisma.user.create({
+          data: {
+               firstName: meta.firstName,
+               lastName: meta.lastName,
+               email: meta.email,
+               password: meta.hashedPassword,
+               emailVerified: true
+          }
+     })
+
+     await notificationProducer.sendWelcomeEmail(meta.email, meta.firstName);
+     logger.info(`Welcome email queued for ${meta.email}`);
+     return user;
+     
+}
+
+module.exports = {sendOTP, verifyOTP}

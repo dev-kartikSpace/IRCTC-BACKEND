@@ -26,3 +26,20 @@ exports.sendOTP = asyncHandler(async(req, res) =>{
           message: "OTP sent successfully"
      })
 })
+
+exports.verifyOTP = asyncHandler(async(req, res) =>{
+     const {otp} = req.body;
+     const otpSessionId = req.cookies.otp_session;
+
+     if(!otp || !otpSessionId){
+          throw new BadRequestError("OTP or OTPSession is missing")
+     }
+
+     const user = await authService.verifyOTP(otp, otpSessionId);
+     res.clearCookie("otp_session");
+     return res.status(201).json({
+          success: true,
+          message: "User Account created successfully",
+          data: user
+     })
+})
