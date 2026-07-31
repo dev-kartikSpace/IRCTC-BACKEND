@@ -1,9 +1,9 @@
-const {ConflictError} = require("../utils/error");
-const {generateAndStoreOtp} = require("../utils/otp");
+const {ConflictError, BadRequestError} = require("../utils/error");
+const {generateAndStoreOtp, verifyOtp} = require("../utils/otp");
 const {sendOtpEmail, verifyOtpEmail} = require("../utils/email");
 const bcrypt = require('bcrypt');
 const prisma = require("../config/prisma");
-
+const logger = require("../config/logger");
 
 const sendOTP = async(firstName, lastName, email, password) =>{
      const existingUser = await prisma.user.findUnique({
@@ -35,8 +35,13 @@ const verifyOTP = async(otp, otpSessionId) =>{
           }
      })
 
-     await notificationProducer.sendWelcomeEmail(meta.email, meta.firstName);
-     logger.info(`Welcome email queued for ${meta.email}`);
+     try {
+          await verifyOtpEmail(meta);
+          logger.info(`Welcome email sent to ${meta.email}`);
+     } catch (emailError) {
+          logger.warn({ message: "Welcome email failed", error: emailError.message, email: meta.email });
+     }
+
      return user;
      
 }

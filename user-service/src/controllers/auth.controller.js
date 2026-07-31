@@ -5,8 +5,8 @@ const authService = require('../services/auth.service');
 
 const cookieOptions = (maxAge) => ({
      httpOnly: true,
-     secure: true,
-     sameSite: 'strict',
+     secure: config.NODE_ENV === 'production',
+     sameSite: 'lax',
      maxAge,
 });
 
