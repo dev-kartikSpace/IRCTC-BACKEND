@@ -10,7 +10,7 @@ async function sendOtpEmail(email, otp) {
   const msg = {
     to: email,
     from: `${config.MAIL_SEND}`,
-    subject: "Your DesignKarle verification code",
+    subject: "Your IRCTC verification code",
     html: `
     <div style="
       font-family: Arial, sans-serif; 
@@ -23,7 +23,7 @@ async function sendOtpEmail(email, otp) {
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     ">
       <div style="text-align: center; margin-bottom: 20px;">
-        <h2 style="color: #4A3AFF; margin: 0;">DesignKarle</h2>
+        <h2 style="color: #4A3AFF; margin: 0;">IRCTC</h2>
       </div>
 
       <p style="font-size: 16px; color: #333;">
@@ -31,7 +31,7 @@ async function sendOtpEmail(email, otp) {
       </p>
 
       <p style="font-size: 16px; color: #333;">
-        Welcome to <strong>DesignKarle</strong> 👋  
+        Welcome to <strong>IRCTC</strong> 👋  
         Use the verification code below to complete your sign up:
       </p>
 
@@ -62,8 +62,7 @@ async function sendOtpEmail(email, otp) {
       <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;" />
 
       <p style="font-size: 14px; color: #888; text-align: center;">
-        Happy Learning 🎉<br/>
-        <strong>Team DesignKarle</strong>
+        <strong>Team IRCTC</strong>
       </p>
     </div>`,
   };
@@ -77,7 +76,7 @@ async function verifyOtpEmail(meta) {
   const msg = {
     to: meta.email,
     from: `${config.MAIL_SEND}`,
-    subject: "Welcome to DesignKarle - Email Verified",
+    subject: "Welcome to IRCTC - Email Verified",
     html: `
     <div style="
       font-family: Arial, sans-serif; 
@@ -90,7 +89,7 @@ async function verifyOtpEmail(meta) {
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     ">
       <div style="text-align: center; margin-bottom: 20px;">
-        <h2 style="color: #4A3AFF; margin: 0;">DesignKarle</h2>
+        <h2 style="color: #4A3AFF; margin: 0;">IRCTC</h2>
       </div>
 
       <p style="font-size: 16px; color: #333;">
@@ -98,7 +97,7 @@ async function verifyOtpEmail(meta) {
       </p>
 
       <p style="font-size: 16px; color: #333;">
-        Welcome to <strong>DesignKarle</strong> 👋  
+        Welcome to <strong>IRCTC</strong> 👋  
         Your account has been successfully created and verified.
       </p>
 
@@ -125,8 +124,7 @@ async function verifyOtpEmail(meta) {
       <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;" />
 
       <p style="font-size: 14px; color: #888; text-align: center;">
-        Happy Learning 🎉<br/>
-        <strong>Team DesignKarle</strong>
+        <strong>Team IRCTC</strong>
       </p>
     </div>`,
   };

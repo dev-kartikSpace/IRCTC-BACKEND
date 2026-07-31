@@ -1,4 +1,4 @@
-const { TooManyRequestsError } = require("./error");
+const { TooManyRequestsError, UnauthorizedError } = require("./error");
 const {config} = require('../config');
 const {redis} = require('../config/redis');
 const otpGenerator = require('otp-generator');
@@ -40,4 +40,24 @@ async function generateAndStoreOtp(meta){
      return {otp, otpSessionId};
 }
 
-module.exports = {generateAndStoreOtp};
+async function verifyOtp({email, otp, otpSessionId}){
+     const sessionKey = `otp:session:${otpSessionId}`;
+     const sessionDataRaw = await redis.get(sessionKey);
+
+     if(!sessionDataRaw){
+          throw new UnauthorizedError("OTP expired or invalid", "OTP_INVALID");
+     }
+
+     const sessionData = JSON.parse(sessionDataRaw);
+     const expectedHash = sessionData.hashedOtp;
+     const actualHash = hmacFor(email, otp);
+
+     if(actualHash !== expectedHash){
+          throw new UnauthorizedError("Invalid OTP", "OTP_INVALID");
+     }
+
+     await redis.del(sessionKey);
+     return {meta: sessionData.meta};
+}
+
+module.exports = {generateAndStoreOtp, verifyOtp};
