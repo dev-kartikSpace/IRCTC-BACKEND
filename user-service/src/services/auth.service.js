@@ -46,4 +46,30 @@ const verifyOTP = async(otp, otpSessionId) =>{
      
 }
 
-module.exports = {sendOTP, verifyOTP}
+const login = async(email, password, deviceId) =>{
+     const existingUser = await prisma.user.findUnique({
+          where: {email}
+     })
+     if(!existingUser){
+          throw new UnauthorizedError("Invalid email or password", "INVALID_CREDENTIALS");
+     }
+    //  if(!existingUser.password){
+    //       throw new BadRequestError(
+    //            "This account was created with Google. Please sign in with Google.",
+    //            "OAUTH_ONLY_ACCOUNT"
+    //       );
+    //  }
+     const doesPasswordMatch = await bcrypt.compare(password, existingUser.password);
+     if(!doesPasswordMatch){
+          throw new UnauthorizedError("Invalid email or password", "INVALID_CREDENTIALS");
+     }
+     const accessToken = generateAccessToken(existingUser.id);
+     const refreshToken = generateRefreshToken(existingUser.id);
+     const {jti} = jwt.decode(refreshToken);
+     await redis.set(`refresh:${existingUser.id}:${deviceId}`, jti, 'EX', config.REFRESH_TOKEN_EXP_SEC);
+     const {password: _password, ...safeUser} = existingUser;
+     await redis.set(`user:${existingUser.id}`, JSON.stringify(safeUser), 'EX', config.REDIS_USER_TTL);
+     return {accessToken, refreshToken, loggedInUser: safeUser};
+}
+
+module.exports = {sendOTP, verifyOTP, login}
