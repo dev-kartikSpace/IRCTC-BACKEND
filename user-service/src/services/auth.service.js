@@ -53,12 +53,6 @@ const login = async(email, password, deviceId) =>{
      if(!existingUser){
           throw new UnauthorizedError("Invalid email or password", "INVALID_CREDENTIALS");
      }
-    //  if(!existingUser.password){
-    //       throw new BadRequestError(
-    //            "This account was created with Google. Please sign in with Google.",
-    //            "OAUTH_ONLY_ACCOUNT"
-    //       );
-    //  }
      const doesPasswordMatch = await bcrypt.compare(password, existingUser.password);
      if(!doesPasswordMatch){
           throw new UnauthorizedError("Invalid email or password", "INVALID_CREDENTIALS");
