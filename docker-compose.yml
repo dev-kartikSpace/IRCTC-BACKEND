@@ -13,6 +13,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - irctc-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -24,6 +26,8 @@ services:
       - "8081:80"
     depends_on:
       - postgres
+    networks:
+      - irctc-network
 
   redis:
     image: redis/redis-stack:6.2.6-v19
@@ -36,6 +40,8 @@ services:
       - "8001:8001"
     volumes:
       - redis_data:/data
+    networks:
+      - irctc-network
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -76,6 +82,30 @@ services:
     networks:
       - irctc-network
 
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    restart: always
+    depends_on:
+      - kafka
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: irctc-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+    networks:
+      - irctc-network
+
 volumes:
   postgres_data:
   redis_data:
+  zookeeper_data:
+  zookeeper_logs:
+  kafka_data:
+
+
+
+networks:
+  irctc-network:
+    driver: bridge
