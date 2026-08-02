@@ -59,15 +59,25 @@ export default function LoginPage() {
 
   // Initialise Google Identity Services button
   useEffect(() => {
-    if (window.google) {
+    const initGoogleButton = () => {
+      if (!window.google?.accounts?.id || !document.getElementById('google-btn')) return;
+
       window.google.accounts.id.initialize({
-        client_id: 'YOUR_GOOGLE_CLIENT_ID',
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID',
         callback: handleGoogleResponse,
       });
+
       window.google.accounts.id.renderButton(
         document.getElementById('google-btn'),
         { theme: 'outline', size: 'large' }
       );
+    };
+
+    if (window.google?.accounts?.id) {
+      initGoogleButton();
+    } else {
+      window.addEventListener('load', initGoogleButton);
+      return () => window.removeEventListener('load', initGoogleButton);
     }
   }, []);
 

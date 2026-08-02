@@ -126,10 +126,21 @@ const rotateRefreshToken = async (refreshToken, deviceId) => {
 };
 
 const verifyGoogleIdToken = async (idToken, deviceId) => {
-  const ticket = await client.verifyIdToken({
-    idToken,
-    audience: config.GOOGLE_CLIENT_ID,
-  });
+  if (!idToken) {
+    throw new BadRequestError("Invalid Google ID Token", "INVALID_TOKEN");
+  }
+
+  let ticket;
+  try {
+    ticket = await client.verifyIdToken({
+      idToken,
+      audience: config.GOOGLE_CLIENT_ID,
+    });
+  } catch (error) {
+    logger.warn({ message: "Google ID token verification failed", error: error.message });
+    throw new UnauthorizedError("Invalid Google ID Token", "INVALID_GOOGLE_TOKEN");
+  }
+
   const payload = ticket.getPayload();
 
   if (!payload.sub || !payload.email) {
