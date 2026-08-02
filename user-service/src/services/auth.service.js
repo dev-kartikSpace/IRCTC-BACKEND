@@ -4,6 +4,7 @@ const {sendOtpEmail, verifyOtpEmail} = require("../utils/email");
 const bcrypt = require('bcrypt');
 const prisma = require("../config/prisma");
 const logger = require("../config/logger");
+const { generateAccessToken, generateRefreshToken } = require("../utils/auth");
 
 const sendOTP = async(firstName, lastName, email, password) =>{
      const existingUser = await prisma.user.findUnique({
