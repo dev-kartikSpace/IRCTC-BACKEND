@@ -19,18 +19,21 @@ const config = {
   REFRESH_TOKEN_EXP: process.env.REFRESH_TOKEN_EXP || "7d",
   ACCESS_TOKEN_EXP_SEC: Number(process.env.ACCESS_TOKEN_EXP_SEC || 900),
   REFRESH_TOKEN_EXP_SEC: Number(process.env.REFRESH_TOKEN_EXP_SEC || 604800),
-
+  REDIS_USER_TTL: Number(process.env.REDIS_USER_TTL || 86400),
 
   MAIL_SEND: process.env.MAIL_SEND,
   SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
 }
 
 
-if (!config.SENDGRID_API_KEY) {
-  throw new Error('SENDGRID_API_KEY missing');
+if (config.NODE_ENV === "production") {
+  if (!config.SENDGRID_API_KEY) {
+    throw new Error('SENDGRID_API_KEY missing');
+  }
+
+  if (!config.MAIL_SEND) {
+    throw new Error('MAIL_SEND missing');
+  }
 }
 
-if (!config.MAIL_SEND) {
-  throw new Error('MAIL_SEND missing');
-}
 module.exports = { config };

@@ -13,16 +13,14 @@ module.exports = (err, req, res, next) => {
 
      console.error("UNHANDLED ERROR:", err);
 
-     if(config.NODE_ENV !== "production"){
-          logger.error({
-               message: err.message,
-               stack: err.stack,
-               path: req.path,
-               method: req.method,
-               body: req.body,
-               query: req.query
-          })
-     }
+     logger.error({
+          message: err.message,
+          stack: err.stack,
+          path: req.path,
+          method: req.method,
+          body: req.body,
+          query: req.query
+     });
      return res.status(500).json({
           success: false,
           error: "SERVER_ERROR",

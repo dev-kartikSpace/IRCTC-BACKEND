@@ -1,4 +1,4 @@
-const {ConflictError, BadRequestError} = require("../utils/error");
+const {ConflictError, BadRequestError, UnauthorizedError} = require("../utils/error");
 const {generateAndStoreOtp, verifyOtp} = require("../utils/otp");
 const {sendOtpEmail, verifyOtpEmail} = require("../utils/email");
 const bcrypt = require('bcrypt');
