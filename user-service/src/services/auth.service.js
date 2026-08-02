@@ -88,4 +88,4 @@ const rotateRefreshToken = async(refreshToken, deviceId) =>{
      return {newAccessToken, newRefreshToken};
 }
 
-module.exports = {sendOTP, verifyOTP, login}
+module.exports = {sendOTP, verifyOTP, login, rotateRefreshToken}
