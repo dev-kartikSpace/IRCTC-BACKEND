@@ -83,3 +83,22 @@ exports.rotateRefreshToken = asyncHandler(async(req, res) =>{
           message: "Access and Refresh token reissued"
      })
 })
+
+exports.verifyGoogleIdToken = asyncHandler(async(req, res) =>{
+     const {idToken} = req.body;
+     if(!idToken){
+          throw new BadRequestError("Invalid Google ID Token", "INVALID TOKEN")
+     }
+
+     const deviceId = getDeviceFingerprint(req);
+     
+     const {accessToken, refreshToken, loggedInUser} = await authService.verifyGoogleIdToken(idToken, deviceId);
+     
+     res.cookie("accessToken", accessToken, cookieOptions(config.ACCESS_TOKEN_EXP_SEC * 1000))
+     res.cookie("refreshToken", refreshToken, cookieOptions(config.REFRESH_TOKEN_EXP_SEC * 1000))
+     .status(200).json({
+          success: true,
+          message: "Logged in successfully",
+          loggedInUser
+     })
+})
