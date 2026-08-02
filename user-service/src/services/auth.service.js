@@ -2,9 +2,12 @@ const {ConflictError, BadRequestError, UnauthorizedError} = require("../utils/er
 const {generateAndStoreOtp, verifyOtp} = require("../utils/otp");
 const {sendOtpEmail, verifyOtpEmail} = require("../utils/email");
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const prisma = require("../config/prisma");
 const logger = require("../config/logger");
 const { generateAccessToken, generateRefreshToken } = require("../utils/auth");
+const { redis } = require("../config/redis");
+const { config } = require("../config");
 
 const sendOTP = async(firstName, lastName, email, password) =>{
      const existingUser = await prisma.user.findUnique({
