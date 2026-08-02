@@ -26,7 +26,7 @@ let isProducerConnected = false;
 
 const connectProducer = async () => {
      if (!isProducerConnected) {
-          await producer.connect();
+          //await producer.connect();
           isProducerConnected = true;
           logger.info('Kafka producer connected (DLQ)');
      }
@@ -37,7 +37,7 @@ const shutdown = async () => {
      logger.info('Shutting down Kafka connections...');
      await consumer.disconnect();
      if (isProducerConnected) {
-          await producer.disconnect();
+          //await producer.disconnect();
           isProducerConnected = false;
      }
      process.exit(0);

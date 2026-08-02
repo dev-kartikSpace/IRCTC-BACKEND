@@ -31,39 +31,31 @@ const sendOTP = async (firstName, lastName, email, password) => {
   const hashedPassword = await bcrypt.hash(password, 12);
   const meta = { firstName, lastName, email, hashedPassword };
   const { otp, otpSessionId } = await generateAndStoreOtp(meta);
-  await notificationProducer.sendOtpEmail(email, otp, (config.OTP_TTL)/ 60);
+  await notificationProducer.sendOtpEmail(email, otp, Number(config.OTP_TTL)/ 60);
   logger.info(`otp email queued for ${email}`);
   return { otpSessionId };
 };
 
-const verifyOTP = async (otp, otpSessionId) => {
-  const meta = await verifyOtp(otp, otpSessionId);
-  if (meta === null) {
-    throw new BadRequestError("Invalid or expired OTP", "OTP_INVALID");
-  }
-  const user = await prisma.user.create({
-    data: {
-      firstName: meta.firstName,
-      lastName: meta.lastName,
-      email: meta.email,
-      password: meta.hashedPassword,
-      emailVerified: true,
-    },
-  });
+const verifyOTP = async(otp, otpSessionId) =>{
+     const meta = await verifyOtp(otp, otpSessionId);
+     if(meta === null){
+          throw new BadRequestError("Invalid or expired OTP", "OTP_INVALID");
+     }
+     const user = await prisma.user.create({
+          data: {
+               firstName: meta.firstName,
+               lastName: meta.lastName,
+               email: meta.email,
+               password: meta.hashedPassword,
+               emailVerified: true
+          }
+     })
 
-  try {
-    await verifyOtpEmail(meta);
-    logger.info(`Welcome email sent to ${meta.email}`);
-  } catch (emailError) {
-    logger.warn({
-      message: "Welcome email failed",
-      error: emailError.message,
-      email: meta.email,
-    });
-  }
-
-  return user;
-};
+     await notificationProducer.sendWelcomeEmail(meta.email, meta.firstName);
+     logger.info(`Welcome email queued for ${meta.email}`);
+     return user;
+     
+}
 
 const login = async (email, password, deviceId) => {
   const existingUser = await prisma.user.findUnique({

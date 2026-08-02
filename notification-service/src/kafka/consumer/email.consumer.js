@@ -17,7 +17,7 @@ class EmailConsumer {
                await consumer.run({
                     eachMessage: async({ topic, partition, message }) => {
                          try{
-                              const value = JSON.parse(message.value.toString());
+                              const parsedValue = JSON.parse(message.value.toString());
                               logger.info(`Processing message from topic: ${topic}`, {
                                    partition,
                                    offset: message.offset,

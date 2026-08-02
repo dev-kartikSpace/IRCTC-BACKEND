@@ -12,7 +12,7 @@ function getOtpTemplate(otp, ttlMinutes) {
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     ">
       <div style="text-align: center; margin-bottom: 20px;">
-        <h2 style="color: #4A3AFF; margin: 0;">DesignKarle</h2>
+        <h2 style="color: #4A3AFF; margin: 0;">IRCTC</h2>
       </div>
 
       <p style="font-size: 16px; color: #333;">
@@ -20,7 +20,7 @@ function getOtpTemplate(otp, ttlMinutes) {
       </p>
 
       <p style="font-size: 16px; color: #333;">
-        Welcome to <strong>DesignKarle</strong> 👋  
+        Welcome to <strong>IRCTC</strong> 👋  
         Use the verification code below to complete your sign up:
       </p>
 
@@ -51,8 +51,7 @@ function getOtpTemplate(otp, ttlMinutes) {
       <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;" />
 
       <p style="font-size: 14px; color: #888; text-align: center;">
-        Happy Learning 🎉<br/>
-        <strong>Team DesignKarle</strong>
+        <strong>Team IRCTC</strong>
       </p>
     </div>
   `;
@@ -71,7 +70,7 @@ function getWelcomeTemplate(firstName) {
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     ">
       <div style="text-align: center; margin-bottom: 20px;">
-        <h2 style="color: #4A3AFF; margin: 0;">DesignKarle</h2>
+        <h2 style="color: #4A3AFF; margin: 0;">IRCTC</h2>
       </div>
 
       <p style="font-size: 16px; color: #333;">
@@ -79,7 +78,7 @@ function getWelcomeTemplate(firstName) {
       </p>
 
       <p style="font-size: 16px; color: #333;">
-        Welcome to <strong>DesignKarle</strong> 👋  
+        Welcome to <strong>IRCTC</strong> 👋  
         Your account has been successfully created and verified.
       </p>
 
@@ -106,8 +105,7 @@ function getWelcomeTemplate(firstName) {
       <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;" />
 
       <p style="font-size: 14px; color: #888; text-align: center;">
-        Happy Learning 🎉<br/>
-        <strong>Team DesignKarle</strong>
+        <strong>Team IRCTC</strong>
       </p>
     </div>
   `;
