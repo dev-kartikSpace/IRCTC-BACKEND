@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require("../config/prisma");
 const logger = require("../config/logger");
-const { generateAccessToken, generateRefreshToken } = require("../utils/auth");
+const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require("../utils/auth");
 const { redis } = require("../config/redis");
 const { config } = require("../config");
 
@@ -68,6 +68,24 @@ const login = async(email, password, deviceId) =>{
      const {password: _password, ...safeUser} = existingUser;
      await redis.set(`user:${existingUser.id}`, JSON.stringify(safeUser), 'EX', config.REDIS_USER_TTL);
      return {accessToken, refreshToken, loggedInUser: safeUser};
+}
+
+const rotateRefreshToken = async(refreshToken, deviceId) =>{
+     const payload = verifyRefreshToken(refreshToken);
+     const {id: userId, jti} = payload;
+     const storedJti = await redis.get(`refresh:${userId}:${deviceId}`);
+     if(!storedJti){
+          throw new ForbiddenError("Session Expired", "Login AGAIN")
+     }
+     if(storedJti !== jti){
+          await redis.del(`refresh:${userId}:${deviceId}`);
+          throw new ForbiddenError("Refresh token reused", "LOGIN AGAIN")
+     }
+     const newAccessToken = generateAccessToken(payload.id);
+     const newRefreshToken = generateRefreshToken(payload.id);
+     const {jti: newJti} = jwt.decode(newRefreshToken);
+     await redis.set(`refresh:${payload.id}:${deviceId}`, newJti, 'EX', config.REFRESH_TOKEN_EXP_SEC);
+     return {newAccessToken, newRefreshToken};
 }
 
 module.exports = {sendOTP, verifyOTP, login}
