@@ -6,7 +6,7 @@ const getDeviceFingerprint = require("../utils/deviceFingerprint");
 
 const cookieOptions = (maxAge) => ({
   httpOnly: true,
-  secure: config.NODE_ENV === "production",
+  secure: config.NODE_ENV === "development",
   sameSite: "lax",
   maxAge,
 });

@@ -26,14 +26,12 @@ const config = {
 }
 
 
-if (config.NODE_ENV === "production") {
-  if (!config.SENDGRID_API_KEY) {
-    throw new Error('SENDGRID_API_KEY missing');
-  }
+if (!config.SENDGRID_API_KEY) {
+  throw new Error('SENDGRID_API_KEY missing');
+}
 
-  if (!config.MAIL_SEND) {
-    throw new Error('MAIL_SEND missing');
-  }
+if (!config.MAIL_SEND) {
+  throw new Error('MAIL_SEND missing');
 }
 
 module.exports = { config };
