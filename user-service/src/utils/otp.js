@@ -1,4 +1,4 @@
-const { TooManyRequestsError } = require("./error");
+const { TooManyRequestsError, UnauthorizedError } = require("./error");
 const {config} = require('../config');
 const {redis} = require('../config/redis');
 const otpGenerator = require('otp-generator');
@@ -40,4 +40,28 @@ async function generateAndStoreOtp(meta){
      return {otp, otpSessionId};
 }
 
-module.exports = {generateAndStoreOtp};
+async function verifyOtp(otp, otpSessionId){
+     const rawData = await redis.get(`otp:session:${otpSessionId}`);
+     if(!rawData) return null;
+
+     const {hashedOtp: storedOtp, meta} = JSON.parse(rawData);
+     const attemptsKey = `otp:attempts:${meta.email}`;
+     const attemptsCount = parseInt(await redis.get(attemptsKey) || '0', 10);
+     if(attemptsCount >= ATTEMPT_MAX){
+          throw new TooManyRequestsError("Too many attempts to verify OTP");
+     }
+     const hashedOtp = hmacFor(meta.email, otp);
+     if(crypto.timingSafeEqual(
+          Buffer.from(hashedOtp, 'hex'),
+          Buffer.from(storedOtp, 'hex'))){
+               await redis.del(`otp:session:${otpSessionId}`, attemptsKey);
+               await redis.del(`otp:rate:${meta.email}`);
+               return meta;
+     }else{
+          await redis.incr(attemptsKey);
+          await redis.expire(attemptsKey, OTP_TTL);
+          return null;
+     }
+}
+
+module.exports = {generateAndStoreOtp, verifyOtp};
