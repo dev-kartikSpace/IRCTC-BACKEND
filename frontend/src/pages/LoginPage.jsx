@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '../store/auth.store';
 import { authApi } from '../api/auth.api';
@@ -43,6 +43,34 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  // Google Sign‑In handler
+  const handleGoogleResponse = async (response) => {
+    try {
+      const res = await authApi.googleAuth(response.credential);
+      const user = res.loggedInUser || res.data?.user || res.data;
+      setUser(user);
+      showToast('Login successful!', 'success');
+      navigate(redirect, { replace: true });
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Initialise Google Identity Services button
+  useEffect(() => {
+    if (window.google) {
+      window.google.accounts.id.initialize({
+        client_id: 'YOUR_GOOGLE_CLIENT_ID',
+        callback: handleGoogleResponse,
+      });
+      window.google.accounts.id.renderButton(
+        document.getElementById('google-btn'),
+        { theme: 'outline', size: 'large' }
+      );
+    }
+  }, []);
+
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -122,6 +150,7 @@ export default function LoginPage() {
               <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" required />
               <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required />
               <Button type="submit" loading={loading} className="w-full">Sign In</Button>
+            <div id="google-btn" className="flex justify-center mt-4"></div>
             </form>
           )}
 
