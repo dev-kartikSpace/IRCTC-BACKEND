@@ -6,7 +6,7 @@ const { config } = require('./config');
 const cookieParser = require('cookie-parser');
 // Routes
 const stationRoutes = require('./routes/station.route');
-// const trainRoutes = require('./routes/train.route');
+const trainRoutes = require('./routes/train.route');
 // const scheduleRoutes = require('./routes/schedule.route');
 
 // Middlewares
@@ -51,7 +51,7 @@ app.get('/health', (req, res) => {
 
 // API Routes - All protected by auth middleware
 app.use("/stations", stationRoutes);
-// app.use("/trains", trainRoutes);
+app.use("/trains", trainRoutes);
 // app.use("/schedules", scheduleRoutes);
 
 // Error handler (must be last)
