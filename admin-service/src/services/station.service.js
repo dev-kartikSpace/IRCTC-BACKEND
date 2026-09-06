@@ -26,4 +26,4 @@ const createStation = async (data) => {
   return station;
 };
 
-module.exports(createStation);
+module.exports = { createStation };

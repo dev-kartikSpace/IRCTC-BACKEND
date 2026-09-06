@@ -1,11 +1,12 @@
 const asyncHandler = require("../utils/asyncHandler");
 const { BadRequestError } = require("../utils/error");
+const stationService = require("../services/station.service");
 
 
 exports.createStation = asyncHandler(async(req,res) => {
     const {name, code, city, state} = req.body;
 
-    if(!name || code || city || state){
+     if(!name || !code || !city || !state){
         throw new BadRequestError('stationCode, stationName, city and state are required');
     }
 
